@@ -1,0 +1,227 @@
+
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+-- -----------------------------------------------------
+-- Schema dshop
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------user
+-- Schema dshop
+-- -----------------------------------------------------
+drop database dshop;
+CREATE SCHEMA IF NOT EXISTS `dshop` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
+USE `dshop` ;
+
+-- -----------------------------------------------------
+-- Table `dshop`.`user`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `dshop`.`user` ;
+
+CREATE TABLE IF NOT EXISTS `dshop`.`user` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(50) NOT NULL,
+  `email` VARCHAR(50) NULL DEFAULT NULL,
+  `password` VARCHAR(255) NOT NULL,
+  `firstname` NVARCHAR(100)  NULL DEFAULT NULL,
+  `lastname` NVARCHAR(100) NULL DEFAULT NULL,
+  `address` TEXT NULL DEFAULT NULL,
+  `roles` INT NOT NULL,
+  `active` TINYINT(1) NOT NULL DEFAULT '1',
+  `phone_number` VARCHAR(15) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `email` (`email` ASC) VISIBLE)
+ENGINE = InnoDB
+AUTO_INCREMENT = 100002
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+insert into user (username, password, roles) values
+    ('admin', '$2a$10$mNnPVz3Z2kFdesKhIyBjjOWoD7Fpy1Ad8qfADHHA8fa8VD31jTjnu', 3),
+    ('user1', '$2a$10$9/X3PN281mbqw7rDpaUeFezyxIZtfXRivJAM/H9HYgpg9nQyzcsCS', 2),
+    ('user2', '$2a$10$y084f/w4MCXcVqaVKLy9nusFdrM8ZjydjdSeWbyy85yVEP9RO/bbO', 2);
+-- -----------------------------------------------------
+-- Table `dshop`.`cart`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `dshop`.`cart` ;
+
+CREATE TABLE IF NOT EXISTS `dshop`.`cart` (
+  `cart_id` INT NOT NULL AUTO_INCREMENT,
+  `total` DOUBLE NULL DEFAULT NULL,
+  `user_id` INT NOT NULL,
+  PRIMARY KEY (`cart_id`),
+  INDEX `cart_ibfk_1` (`user_id` ASC) VISIBLE,
+  CONSTRAINT `cart_ibfk_1`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `dshop`.`user` (`id`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 100002
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `dshop`.`category`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `dshop`.`category` ;
+
+CREATE TABLE IF NOT EXISTS `dshop`.`category` (
+  `category_id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(128) CHARACTER SET 'utf8' NULL DEFAULT NULL,
+  PRIMARY KEY (`category_id`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 100003
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+insert into category(name) values('SAMSUNG'),
+("IPHONE"),
+("XIAOMI");
+-- -----------------------------------------------------
+-- Table `dshop`.`product`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `dshop`.`product` ;
+
+CREATE TABLE IF NOT EXISTS `dshop`.`product` (
+  `product_id` INT NOT NULL AUTO_INCREMENT,
+  `category_id` INT NOT NULL,
+  `name` VARCHAR(100) CHARACTER SET 'utf8' NOT NULL,
+  `price` DECIMAL(15,4) NOT NULL DEFAULT '0.0000',
+  `content` TEXT NOT NULL,
+  `discount` INT NOT NULL,
+  `quantity` INT NOT NULL,
+  `created` DATE NOT NULL,
+  `view` INT NOT NULL DEFAULT '0',
+  PRIMARY KEY (`product_id`),
+  INDEX `category_id` (`category_id` ASC) VISIBLE,
+  CONSTRAINT `product_ibfk_1`
+    FOREIGN KEY (`category_id`)
+    REFERENCES `dshop`.`category` (`category_id`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 100001
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `dshop`.`cart_item`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `dshop`.`cart_item` ;
+
+CREATE TABLE IF NOT EXISTS `dshop`.`cart_item` (
+  `cartitem_id` INT NOT NULL AUTO_INCREMENT,
+  `cart_id` INT NOT NULL,
+  `product_id` INT NOT NULL,
+  `total_price` DOUBLE NULL DEFAULT NULL,
+  `quantity` INT NULL DEFAULT NULL,
+  PRIMARY KEY (`cartitem_id`),
+  INDEX `cart_id` (`cart_id` ASC) VISIBLE,
+  INDEX `product_id` (`product_id` ASC) VISIBLE,
+  CONSTRAINT `cart_item_ibfk_1`
+    FOREIGN KEY (`cart_id`)
+    REFERENCES `dshop`.`cart` (`cart_id`),
+  CONSTRAINT `cart_item_ibfk_2`
+    FOREIGN KEY (`product_id`)
+    REFERENCES `dshop`.`product` (`product_id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `dshop`.`image`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `dshop`.`image` ;
+
+CREATE TABLE IF NOT EXISTS `dshop`.`image` (
+  `image_id` INT NOT NULL AUTO_INCREMENT,
+  `image_link` TEXT NULL DEFAULT NULL,
+  `product_id` INT NOT NULL,
+  PRIMARY KEY (`image_id`),
+  INDEX `product_id` (`product_id` ASC) VISIBLE,
+  CONSTRAINT `image_ibfk_1`
+    FOREIGN KEY (`product_id`)
+    REFERENCES `dshop`.`product` (`product_id`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 100001
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `dshop`.`order`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `dshop`.`order` ;
+
+CREATE TABLE IF NOT EXISTS `dshop`.`order` (
+  `order_id` INT NOT NULL AUTO_INCREMENT,
+  `total_price` DOUBLE NULL DEFAULT NULL,
+  `orderdate` DATETIME NULL DEFAULT NULL,
+  `user_id` INT NOT NULL,
+  `status` VARCHAR(30) NOT NULL,
+  PRIMARY KEY (`order_id`),
+  INDEX `order_ibfk_1` (`user_id` ASC) VISIBLE,
+  CONSTRAINT `order_ibfk_1`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `dshop`.`user` (`id`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 100001
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `dshop`.`order_details`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `dshop`.`order_details` ;
+
+CREATE TABLE IF NOT EXISTS `dshop`.`order_details` (
+  `id` INT NOT NULL,
+  `product_id` INT NOT NULL,
+  `quantity` INT NOT NULL,
+  `price` DOUBLE NOT NULL,
+  `product_name` TEXT NULL DEFAULT NULL,
+  `order_id` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `order_id` (`order_id` ASC) VISIBLE,
+  CONSTRAINT `order_details_ibfk_1`
+    FOREIGN KEY (`order_id`)
+    REFERENCES `dshop`.`order` (`order_id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `dshop`.`product_comment`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `dshop`.`product_comment` ;
+
+CREATE TABLE IF NOT EXISTS `dshop`.`product_comment` (
+  `comment_id` INT NOT NULL AUTO_INCREMENT,
+  `comment_contents` TEXT NULL DEFAULT NULL,
+  `comment_date` DATETIME NULL DEFAULT NULL,
+  `user_id` INT NOT NULL,
+  `product_id` INT NOT NULL,
+  PRIMARY KEY (`comment_id`),
+  INDEX `product_id` (`product_id` ASC) VISIBLE,
+  INDEX `product_comment_ibfk_1` (`user_id` ASC) VISIBLE,
+  CONSTRAINT `product_comment_ibfk_1`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `dshop`.`user` (`id`),
+  CONSTRAINT `product_comment_ibfk_2`
+    FOREIGN KEY (`product_id`)
+    REFERENCES `dshop`.`product` (`product_id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
