@@ -1,63 +1,45 @@
 package vn.dshop.controller.admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import vn.dshop.dto.ProductDTO;
 import vn.dshop.entity.Category;
-import vn.dshop.entity.Image;
 import vn.dshop.entity.Product;
 import vn.dshop.service.CategoryService;
-import vn.dshop.service.ImageService;
 import vn.dshop.service.ProductService;
 import vn.dshop.transform.ProductTransform;
-
-import javax.annotation.Resource;
-import java.io.File;
 import java.text.DateFormat;
-
 import java.text.ParseException;
-import java.util.Date;
 import java.util.List;
 
 @RestController
 @RequestMapping(value = "admin/products")
 public class AdminProductController {
-    public static Date dateServer(){
-        Date date = new Date();
-        return date;
-    }
     private ProductService productService;
     private CategoryService categoryService;
     private DateFormat dateFormat;
-    private ImageService imageService;
 
     @Autowired
-    public AdminProductController(ProductService productService, CategoryService categoryService, DateFormat dateFormat, ImageService imageService) {
+    public AdminProductController(ProductService productService, CategoryService categoryService, DateFormat dateFormat) {
         this.productService = productService;
         this.categoryService = categoryService;
         this.dateFormat = dateFormat;
-        this.imageService = imageService;
-
     }
-
     @PostMapping(value = "/save")
-    public ResponseEntity<ProductDTO> save(@ModelAttribute ProductDTO body)
+    public ResponseEntity save(@ModelAttribute ProductDTO body, @RequestParam List<MultipartFile> images)
             throws ParseException {
         ProductTransform productTransform = new ProductTransform(dateFormat);
         Category category = categoryService.getCategoryById(body.getCategoryid());
+        if(category==null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new String("khong co category"));
+        }
         Product product = productTransform.apply(body);
         product.setCategory(category);
-        productService.save(product);
-        for(MultipartFile image:body.getImages()){
-            Image imageEntity = new Image();
-            imageEntity.setImageLink(image.getOriginalFilename());
-            System.out.println(image.getOriginalFilename());
-            imageEntity.setProduct(product);
-            imageService.save(imageEntity,image);
-        }
+        productService.save(product, images);
         return ResponseEntity.ok(productTransform.apply(product));
     }
 }

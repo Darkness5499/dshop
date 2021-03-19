@@ -16,5 +16,6 @@ public class ProductDTO {
     private int quantity;
     private String created;
     private int categoryid;
-    private List<MultipartFile> images;
+    private double newPrice;
+
 }

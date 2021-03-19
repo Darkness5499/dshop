@@ -28,11 +28,13 @@ public class ProductTransform {
     }
     public ProductDTO apply(Product product){
         ProductDTO dto = new ProductDTO();
+        double newprice = product.getPrice()*product.getDiscount()/100;
         dto.setName(product.getName());
         dto.setPrice(product.getPrice());
         dto.setContent(product.getContent());
         dto.setDiscount(product.getDiscount());
         dto.setQuantity(product.getQuantity());
+        dto.setNewPrice(newprice);
         if(product.getCreated()!=null){
             dto.setCreated(dateFormat.format(product.getCreated()));
         }
