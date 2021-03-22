@@ -6,24 +6,28 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import vn.dshop.dto.ProductDTO;
+import vn.dshop.dto.product.ProductDTO;
+import vn.dshop.dto.user.MessageDTO;
 import vn.dshop.entity.Category;
 import vn.dshop.entity.Product;
 import vn.dshop.service.CategoryService;
 import vn.dshop.service.ProductService;
 import vn.dshop.transform.ProductTransform;
+import java.util.Locale;
+
+import javax.validation.Valid;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.List;
 @RestController
 @RequestMapping(value = "admin/products")
-public class AdminProductController {
+public class AdProductController {
     private ProductService productService;
     private CategoryService categoryService;
     private DateFormat dateFormat;
     private MessageSource messageSource;
     @Autowired
-    public AdminProductController(ProductService productService, CategoryService categoryService, DateFormat dateFormat, MessageSource messageSource) {
+    public AdProductController(ProductService productService, CategoryService categoryService, DateFormat dateFormat, MessageSource messageSource) {
         this.productService = productService;
         this.categoryService = categoryService;
         this.dateFormat = dateFormat;
@@ -47,6 +51,41 @@ public class AdminProductController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new String("Dữ liệu không đúng"));
         }
+    }
+    @PostMapping(value = "save1")
+    public ResponseEntity<MessageDTO> save1(@ModelAttribute @Valid ProductDTO body, @RequestParam List<MultipartFile> images, Locale locale) throws ParseException {
+        MessageDTO response = new MessageDTO();
+        ProductTransform productTransform = new ProductTransform(dateFormat);
+        Category category = categoryService.getCategoryById(body.getCategoryid());
+        if(category!=null){
+            Product product = productTransform.apply(body);
+            product.setCategory(category);
+            productService.save(product, images);
+            response.setText(messageSource.getMessage("success.upload",null,locale));
+            return ResponseEntity.ok(response);
+        } else {
+            response.setText(messageSource.getMessage("error.upload", null, locale));
+            return ResponseEntity.ok(response);
+        }
+    }
+    @PutMapping(value = "/update/{productid}")
+    public ResponseEntity<MessageDTO> update(){
+        return null;
+    }
+    @DeleteMapping(value = "delete/{productid}")
+    public ResponseEntity<MessageDTO> delete(){
+        return null;
+    }
+    @DeleteMapping(value = "delete-comment/{commentid}")
+    public ResponseEntity<MessageDTO> deleteComment(){
+        return null;
+    }
+    @PostMapping(value = "/comment")
+    public void comment(){
+
+    }
+    @PutMapping(value = "/update-comment")
+    public void updateComment(){
     }
 
 }

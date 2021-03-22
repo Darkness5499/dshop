@@ -1,7 +1,8 @@
 package vn.dshop.transform;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import vn.dshop.dto.ProductDTO;
+import vn.dshop.dto.product.ProductDTO;
+import vn.dshop.dto.product.ProductReponseDTO;
 import vn.dshop.entity.Product;
 import vn.dshop.service.ProductService;
 
@@ -26,8 +27,8 @@ public class ProductTransform {
         product.setCreated(dateFormat.parse(dto.getCreated()));
         return product;
     }
-    public ProductDTO apply(Product product){
-        ProductDTO dto = new ProductDTO();
+    public ProductReponseDTO apply(Product product){
+        ProductReponseDTO dto = new ProductReponseDTO();
         double newprice = product.getPrice()*product.getDiscount()/100;
         dto.setName(product.getName());
         dto.setPrice(product.getPrice());
