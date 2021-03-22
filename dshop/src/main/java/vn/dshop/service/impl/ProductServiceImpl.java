@@ -56,7 +56,6 @@ public class ProductServiceImpl implements ProductService {
         }
 
     }
-
     @Override
     @Transactional
     public void delete(int id) {
@@ -76,6 +75,13 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Product> getProductByCategoryName(String categoryName) {
         return this.productRepository.getProductByCategoryName(categoryName);
+    }
+
+    @Override
+    public List<Image> getAllImageByProduct(int productid) {
+//        Product product = getProductById(productid);
+        return null;
+
     }
 
     //store image

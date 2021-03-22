@@ -27,6 +27,8 @@ import vn.dshop.entity.User;
 import vn.dshop.service.UserService;
 import vn.dshop.transform.UserTransform;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/accounts")
 public class AccountController {
@@ -71,7 +73,7 @@ public class AccountController {
     }
 
     @PutMapping("/password")
-    public ResponseEntity<MessageDTO> changePassword(@RequestBody ChangePasswordDTO body, Locale locale) {
+    public ResponseEntity<MessageDTO> changePassword(@RequestBody @Valid ChangePasswordDTO body, Locale locale) {
         User user = userService.findByUsername(body.getUsername());
         MessageDTO response = new MessageDTO();
         if (passwordEncoder.matches(body.getCurrentPassword(), user.getPassword())) {

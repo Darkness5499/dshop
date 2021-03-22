@@ -1,5 +1,6 @@
 package vn.dshop.repository.impl;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -15,6 +16,7 @@ public class CartItemRepositoryImpl implements CartItemRepository {
 
     @Override
     public void addToCart(CartItem cartItem) {
+        Session session = this.sessionFactory.getCurrentSession();
 
     }
 
