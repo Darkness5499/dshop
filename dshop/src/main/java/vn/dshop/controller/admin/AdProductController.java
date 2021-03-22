@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import vn.dshop.dto.product.ProductDTO;
@@ -20,6 +21,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.List;
 @RestController
+@Secured("ROLE_ADMIN")
 @RequestMapping(value = "admin/products")
 public class AdProductController {
     private ProductService productService;
@@ -33,6 +35,7 @@ public class AdProductController {
         this.dateFormat = dateFormat;
         this.messageSource = messageSource;
     }
+    @Secured("ROLE_ADMIN")
     @PostMapping(value = "/save")
     public ResponseEntity save(@ModelAttribute ProductDTO body, @RequestParam List<MultipartFile> images)
             throws ParseException {
