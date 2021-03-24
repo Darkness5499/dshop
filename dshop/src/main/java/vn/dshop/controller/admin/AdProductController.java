@@ -1,10 +1,9 @@
 package vn.dshop.controller.admin;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import vn.dshop.dto.product.ProductDTO;
@@ -15,13 +14,12 @@ import vn.dshop.service.CategoryService;
 import vn.dshop.service.ProductService;
 import vn.dshop.transform.ProductTransform;
 import java.util.Locale;
-
 import javax.validation.Valid;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.List;
 @RestController
-@Secured("ROLE_ADMIN")
+//@Secured("ROLE_ADMIN")
 @RequestMapping(value = "admin/products")
 public class AdProductController {
     private ProductService productService;
@@ -35,7 +33,6 @@ public class AdProductController {
         this.dateFormat = dateFormat;
         this.messageSource = messageSource;
     }
-    @Secured("ROLE_ADMIN")
     @PostMapping(value = "/save")
     public ResponseEntity save(@ModelAttribute ProductDTO body, @RequestParam List<MultipartFile> images)
             throws ParseException {
@@ -55,24 +52,27 @@ public class AdProductController {
                     .body(new String("Dữ liệu không đúng"));
         }
     }
-    @PostMapping(value = "save1")
+    @PostMapping(value = "save1", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<MessageDTO> save1(@ModelAttribute @Valid ProductDTO body, @RequestParam List<MultipartFile> images, Locale locale) throws ParseException {
         MessageDTO response = new MessageDTO();
         ProductTransform productTransform = new ProductTransform(dateFormat);
         Category category = categoryService.getCategoryById(body.getCategoryid());
-        if(category!=null){
-            Product product = productTransform.apply(body);
-            product.setCategory(category);
-            productService.save(product, images);
-            response.setText(messageSource.getMessage("success.upload",null,locale));
-            return ResponseEntity.ok(response);
-        } else {
+        try{
+            if(category!=null){
+                Product product = productTransform.apply(body);
+                product.setCategory(category);
+                productService.save(product, images);
+                response.setText(messageSource.getMessage("success.upload",null,locale));
+                return ResponseEntity.ok(response);
+            }
+        } catch (Exception e){
             response.setText(messageSource.getMessage("error.upload", null, locale));
-            return ResponseEntity.ok(response);
+            return ResponseEntity.badRequest().body(response);
         }
+        return null;
     }
     @PutMapping(value = "/update/{productid}")
-    public ResponseEntity<MessageDTO> update(){
+    public ResponseEntity<MessageDTO> update(@RequestBody @Valid ProductDTO body,@PathVariable(name = "productid") int productid, Locale locale) throws ParseException {
         return null;
     }
     @DeleteMapping(value = "delete/{productid}")

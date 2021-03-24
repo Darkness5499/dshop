@@ -14,17 +14,17 @@ import java.util.List;
 public class Cart {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="cart_id")
     private int cartId;
     private double total;
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JsonIgnore
     private User user;
 
     @OneToMany(mappedBy = "cart", fetch = FetchType.LAZY)
-    @JsonIgnore
     List<CartItem> cartItems;
 
 

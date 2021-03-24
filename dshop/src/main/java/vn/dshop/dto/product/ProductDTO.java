@@ -1,7 +1,6 @@
 package vn.dshop.dto.product;
 import lombok.Getter;
 import lombok.Setter;
-
 import javax.validation.constraints.NotBlank;
 
 @Getter
@@ -14,7 +13,6 @@ public class ProductDTO {
     private int discount;
     private int quantity;
     private String created;
-
     private int categoryid;
 
 }

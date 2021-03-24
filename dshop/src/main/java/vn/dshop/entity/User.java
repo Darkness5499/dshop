@@ -1,5 +1,6 @@
 package vn.dshop.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +15,7 @@ import java.util.Set;
 public class  User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
     private String username;
@@ -29,6 +30,7 @@ public class  User {
     private boolean active;
 
     @OneToOne(mappedBy = "user")
+    @JsonIgnore
     private Cart cart;
 
     @OneToMany(mappedBy = "user")

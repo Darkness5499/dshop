@@ -29,7 +29,8 @@ public class ProductTransform {
     }
     public ProductResponseDTO apply(Product product){
         ProductResponseDTO dto = new ProductResponseDTO();
-        double newprice = product.getPrice()*product.getDiscount()/100;
+        double newprice = product.getPrice()*(100-product.getDiscount());
+        dto.setCategoryid(product.getCategory().getCategoryId());
         dto.setName(product.getName());
         dto.setPrice(product.getPrice());
         dto.setContent(product.getContent());

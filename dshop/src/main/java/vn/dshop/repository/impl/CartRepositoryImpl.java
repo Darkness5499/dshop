@@ -5,6 +5,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import vn.dshop.entity.Cart;
+import vn.dshop.entity.CartItem;
 import vn.dshop.repository.CartRepository;
 
 @Repository
@@ -23,7 +24,11 @@ public class CartRepositoryImpl implements CartRepository {
 
     @Override
     public void emptyCart(Cart cart) {
-        //xoá toàn bộ sản phẩm trong giỏ hàng
+        Session session = this.sessionFactory.getCurrentSession();
+        for(CartItem cartItem : cart.getCartItems()){
+            session.delete(cartItem);
+        }
+        cart.setTotal(0);
 
     }
 

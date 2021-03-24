@@ -9,6 +9,7 @@ import vn.dshop.entity.Category;
 import vn.dshop.entity.Product;
 import vn.dshop.repository.ProductRepository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 @Repository
 public class ProductRepositoryImpl implements ProductRepository {
@@ -27,6 +28,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
+
     public void save(Product p) {
         Session session = this.sessionFactory.getCurrentSession();
         session.persist(p);
@@ -57,7 +59,10 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public List<Product> getProductsByName(String name) {
-        return null;
+        Session session = this.sessionFactory.getCurrentSession();
+        Query<Product> query = session.createQuery("select p from Product p where p.name =:name",Product.class);
+        query.setParameter("name",name);
+        return query.getResultList();
     }
 
     @Override

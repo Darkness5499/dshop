@@ -1,5 +1,6 @@
 package vn.dshop.service.impl;
 
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -54,7 +55,6 @@ public class ProductServiceImpl implements ProductService {
             image.setContentType(file.getContentType());
             image.setProduct(p);
         }
-
     }
     @Override
     @Transactional
@@ -79,9 +79,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Image> getAllImageByProduct(int productid) {
-//        Product product = getProductById(productid);
-        return null;
-
+        return this.imageRepository.getAllImageByProduct(productid);
     }
 
     //store image

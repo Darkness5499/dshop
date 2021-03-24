@@ -16,14 +16,16 @@ import java.util.List;
 public class Order {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id")
     private int orderId;
     @Column(name = "total_price")
     private double orderTotalPrice;
     @Column(name = "orderdate")
     private Date orderdate;
+    private String address;
     private Status status;
+
 
     @ManyToOne
     @JoinColumn(name = "user_id")

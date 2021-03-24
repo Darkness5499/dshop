@@ -23,8 +23,6 @@ public class CategoryRepositoryImpl implements CategoryRepository {
         Query<Category> query = session.createQuery("select c from Category c");
         session.getTransaction().commit();
         return query.getResultList();
-
-
     }
 
     @Override

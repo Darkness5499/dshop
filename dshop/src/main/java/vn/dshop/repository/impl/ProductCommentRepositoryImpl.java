@@ -1,6 +1,8 @@
 package vn.dshop.repository.impl;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import vn.dshop.entity.ProductComment;
@@ -18,16 +20,22 @@ public class ProductCommentRepositoryImpl implements ProductCommentRepository {
 
     @Override
     public void save(ProductComment productComment) {
-
+        Session session = this.sessionFactory.getCurrentSession();
+        session.persist(productComment);
     }
 
     @Override
     public void deleteComment(ProductComment productComment) {
-
+        Session session = this.sessionFactory.getCurrentSession();
+        session.delete(productComment);
     }
 
     @Override
-    public List<ProductComment> getAllComment() {
-        return null;
+    public List<ProductComment> getAllComment(int productid) {
+        Session session = this.sessionFactory.getCurrentSession();
+        Query<ProductComment> query = session.createQuery("select p from ProductComment p where p.product.productId =: productid", ProductComment.class);
+        query.setParameter("productid",productid);
+        return query.getResultList();
     }
+
 }

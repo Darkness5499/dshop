@@ -13,7 +13,7 @@ import java.util.Date;
 public class ProductComment {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int commentId;
     @Column(name = "comment_contents")
     private String commentContents;

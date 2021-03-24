@@ -6,7 +6,6 @@ import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import vn.dshop.entity.Image;
-import vn.dshop.entity.Product;
 import vn.dshop.repository.ImageRepository;
 
 import java.util.List;

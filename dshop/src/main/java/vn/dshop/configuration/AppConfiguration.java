@@ -19,7 +19,6 @@ public class AppConfiguration {
         sessionFactory.setPackagesToScan("vn.dshop");
         return sessionFactory;
     }
-
     @Bean
     public DateFormat dateFormat() {
         SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
