@@ -1,14 +1,12 @@
-package vn.dshop.dto;
+package vn.dshop.dto.product;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
-
+import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
 public class ProductDTO {
+    @NotBlank(message = "error.blank")
     private String name;
     private double price;
     private String content;
@@ -16,5 +14,5 @@ public class ProductDTO {
     private int quantity;
     private String created;
     private int categoryid;
-    private List<MultipartFile> images;
+
 }

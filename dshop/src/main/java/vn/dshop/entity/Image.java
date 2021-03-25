@@ -15,9 +15,11 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int imageId;
 
-    @Column(name = "image_link")
-    private String imageLink;
+    @Column(name = "image_url")
+    private String imageUrl;
 
+    @Column(name = "content_type")
+    private String contentType;
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;

@@ -21,7 +21,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void insert(Category c) {
+    public void save(Category c) {
         this.categoryRepository.save(c);
     }
 
@@ -40,4 +40,6 @@ public class CategoryServiceImpl implements CategoryService {
     public void delete(Category category) {
         this.categoryRepository.delete(category);
     }
+
+
 }

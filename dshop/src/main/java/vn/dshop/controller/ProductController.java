@@ -1,20 +1,16 @@
 package vn.dshop.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import vn.dshop.dto.product.ProductResponseDTO;
 import vn.dshop.entity.Product;
 import vn.dshop.service.CategoryService;
 import vn.dshop.service.ProductService;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import vn.dshop.transform.ProductTransform;
+
+import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -22,30 +18,29 @@ import java.util.List;
 public class ProductController {
     public ProductService productService;
     private CategoryService categoryService;
+    private DateFormat dateFormat;
+
     @Autowired
-    public ProductController(ProductService productService, CategoryService categoryService) {
+    public ProductController(ProductService productService, CategoryService categoryService, DateFormat dateFormat) {
         this.productService = productService;
         this.categoryService = categoryService;
+        this.dateFormat = dateFormat;
     }
-
     @GetMapping
-    public List<Product> listProduct(){
-        return productService.getAllProducts();
+    public List<ProductResponseDTO> listProduct(){
+        ProductTransform productTransform = new ProductTransform(dateFormat);
+        List<Product> products = productService.getAllProducts();
+        List<ProductResponseDTO> response = new ArrayList<>();
+        for(Product p:products){
+            ProductResponseDTO productResponseDTO = productTransform.apply(p);
+            response.add(productResponseDTO);
+        }
+        return response;
     }
-
     @GetMapping(value = "/{category}")
     public List<Product> getProductsByCategory(@PathVariable(name = "category") String category){
         return this.productService.getProductByCategoryName(category);
     }
-    @GetMapping(value = "/image", produces = MediaType.IMAGE_JPEG_VALUE)
-    public ResponseEntity<Resource> image() throws IOException {
-        final ByteArrayResource inputStream = new ByteArrayResource(Files.readAllBytes(Paths.get(
-                "C:\\Users\\xngok\\Desktop\\dshop\\dshop\\src\\main\\resources\\media\\uploads\\a.jpeg"
-        )));
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .contentLength(inputStream.contentLength())
-                .body(inputStream);
 
-    }
+
 }

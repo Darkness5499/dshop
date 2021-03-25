@@ -21,11 +21,15 @@ import vn.dshop.dto.user.CreateUserDTO;
 import vn.dshop.dto.user.JWTResponseDTO;
 import vn.dshop.dto.user.MessageDTO;
 import vn.dshop.dto.user.UserDTO;
+import vn.dshop.entity.Cart;
 import vn.dshop.jwt.JWTTokenComponent;
 import vn.dshop.jwt.JWTUserDetailsService;
 import vn.dshop.entity.User;
+import vn.dshop.service.CartService;
 import vn.dshop.service.UserService;
 import vn.dshop.transform.UserTransform;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/accounts")
@@ -38,11 +42,12 @@ public class AccountController {
     private AuthenticationManager authenticationManager;
     private JWTTokenComponent jwtTokenComponent;
     private JWTUserDetailsService jwtUserDetailsService;
-
+    private CartService cartService;
     @Autowired
     public AccountController(DateFormat dateFormat, UserService userService, BCryptPasswordEncoder passwordEncoder,
                              MessageSource messageSource, AuthenticationManager authenticationManager,
-                             JWTTokenComponent jwtTokenComponent, JWTUserDetailsService jwtUserDetailsService) {
+                             JWTTokenComponent jwtTokenComponent, JWTUserDetailsService jwtUserDetailsService,
+                             CartService cartService) {
         this.messageSource = messageSource;
         this.dateFormat = dateFormat;
         this.userService = userService;
@@ -50,6 +55,7 @@ public class AccountController {
         this.authenticationManager = authenticationManager;
         this.jwtTokenComponent = jwtTokenComponent;
         this.jwtUserDetailsService = jwtUserDetailsService;
+        this.cartService = cartService;
     }
 
     @PostMapping("/authenticate")
@@ -67,11 +73,15 @@ public class AccountController {
         User user = transform.apply(body);
         encryptPassword(user);
         userService.save(user);
+        Cart cart = new Cart();
+        cart.setTotal(0);
+        cart.setUser(user);
+        cartService.save(cart);
         return ResponseEntity.ok(transform.apply(user));
     }
 
     @PutMapping("/password")
-    public ResponseEntity<MessageDTO> changePassword(@RequestBody ChangePasswordDTO body, Locale locale) {
+    public ResponseEntity<MessageDTO> changePassword(@RequestBody @Valid ChangePasswordDTO body, Locale locale) {
         User user = userService.findByUsername(body.getUsername());
         MessageDTO response = new MessageDTO();
         if (passwordEncoder.matches(body.getCurrentPassword(), user.getPassword())) {
