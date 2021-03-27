@@ -53,14 +53,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().authorizeRequests()
 
-                .antMatchers("/accounts", "/accounts/**","/cart").permitAll() //bật security thì bật dòng này
-                .anyRequest().authenticated() //bật security thì bật dòng này
-//                .anyRequest().permitAll() //tắt security thì bật dòng này lên tắt 2 dòng trên đi
+//                .antMatchers("/accounts", "/accounts/**","/cart").permitAll() //bật security thì bật dòng này
+//                .anyRequest().authenticated() //bật security thì bật dòng này
+                .anyRequest().permitAll() //tắt security thì bật dòng này lên tắt 2 dòng trên đi
                 // make sure stateless session
                 .and().exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         // add a filter to validate the tokens with every request
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+        http.logout().logoutUrl("/accounts/logout").permitAll();
     }
 }

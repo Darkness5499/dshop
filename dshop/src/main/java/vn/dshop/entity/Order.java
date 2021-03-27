@@ -12,7 +12,6 @@ import java.util.List;
 @Getter
 @Setter
 @Table(name = "order")
-
 public class Order {
 
     @Id
@@ -21,7 +20,7 @@ public class Order {
     private int orderId;
     @Column(name = "total_price")
     private double orderTotalPrice;
-    @Column(name = "orderdate")
+    @Column(name = "ordered")
     private Date orderdate;
     private String address;
     private Status status;
@@ -32,7 +31,7 @@ public class Order {
     private User user;
 
     @OneToMany(mappedBy = "order")
-    List<OrderDetails> orderDetailsList;
+    List<OrderItems> orderItemsList;
 
 
 }

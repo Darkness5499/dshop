@@ -19,14 +19,13 @@ public class CartItemRepositoryImpl implements CartItemRepository {
     }
 
     @Override
-    public void addToCart(CartItem cartItem, Cart cart) {
+    public void save(CartItem cartItem) {
         Session session = this.sessionFactory.getCurrentSession();
-        cartItem.setCart(cart);
         session.persist(cartItem);
     }
 
     @Override
-    public void deleteCartItem(CartItem cartItem) {
+    public void delete(CartItem cartItem) {
         Session session = this.sessionFactory.getCurrentSession();
         session.delete(cartItem);
     }

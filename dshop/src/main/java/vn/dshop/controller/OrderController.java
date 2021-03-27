@@ -5,15 +5,13 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import vn.dshop.dto.order.OrderDTO;
-import vn.dshop.dto.order.OrderDetailsDTO;
+import vn.dshop.dto.order.OrderItemsDTO;
+import vn.dshop.dto.order.OrderResponseDTO;
 import vn.dshop.dto.user.MessageDTO;
 import vn.dshop.entity.Order;
-import vn.dshop.entity.OrderDetails;
+import vn.dshop.entity.OrderItems;
 import vn.dshop.entity.User;
 import vn.dshop.service.OrderService;
 import vn.dshop.service.UserService;
@@ -37,6 +35,20 @@ public class OrderController {
         this.dateFormat = dateFormat;
         this.messageSource = messageSource;
     }
+//    @GetMapping
+//
+//    public List<OrderResponseDTO> getALlOrders(Locale locale){
+//        MessageDTO response = new MessageDTO();
+//        SecurityContext securityContext = SecurityContextHolder.getContext();
+//        String username = securityContext.getAuthentication().getName();
+//        User user = userService.findByUsername(username);
+//        List<OrderResponseDTO> orderResponseDTOS;
+//        if(user!=null){
+//
+//        }
+//    }
+
+
     @PostMapping(value = "/save")
     public ResponseEntity<MessageDTO> save(@RequestBody OrderDTO body, Locale locale) throws ParseException {
         MessageDTO response = new MessageDTO();
@@ -45,19 +57,19 @@ public class OrderController {
         User user = userService.findByUsername(username);
         if(user!=null){
             Order order = new Order();
-            List<OrderDetails> orderDetailsList = new ArrayList<>();
+            List<OrderItems> orderItemsList = new ArrayList<>();
             order.setOrderdate(dateFormat.parse(body.getDate()));
             order.setOrderTotalPrice(body.getTotalPrice());
             order.setUser(user);
-            for(OrderDetailsDTO detailsDTO:body.getOrderDetailsDTOS()){
-                OrderDetails orderDetails1 = new OrderDetails();
-                orderDetails1.setProductId(detailsDTO.getProductId());
-                orderDetails1.setProductName(detailsDTO.getProductName());
-                orderDetails1.setQuantity(detailsDTO.getQuantity());
-                orderDetails1.setPrice(detailsDTO.getPrice());
-                orderDetailsList.add(orderDetails1);
+            for(OrderItemsDTO detailsDTO:body.getOrderItemsDTOS()){
+                OrderItems orderItems1 = new OrderItems();
+                orderItems1.setProductId(detailsDTO.getProductId());
+                orderItems1.setProductName(detailsDTO.getProductName());
+                orderItems1.setQuantity(detailsDTO.getQuantity());
+                orderItems1.setPrice(detailsDTO.getPrice());
+                orderItemsList.add(orderItems1);
             }
-            this.orderService.save(order,orderDetailsList);
+            this.orderService.save(order, orderItemsList);
             response.setText(messageSource.getMessage("success.order",null,locale));
             return ResponseEntity.ok(response);
         } else {

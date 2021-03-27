@@ -1,20 +1,18 @@
 package vn.dshop.controller;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import vn.dshop.dto.product.ProductResponseDTO;
 import vn.dshop.entity.Product;
 import vn.dshop.service.CategoryService;
 import vn.dshop.service.ProductService;
 import vn.dshop.transform.ProductTransform;
-
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping(value = "/products")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ProductController {
     public ProductService productService;
     private CategoryService categoryService;

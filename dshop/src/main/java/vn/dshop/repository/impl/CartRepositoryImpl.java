@@ -23,13 +23,19 @@ public class CartRepositoryImpl implements CartRepository {
     }
 
     @Override
-    public void emptyCart(Cart cart) {
+    public void deleteAllItems(Cart cart) {
         Session session = this.sessionFactory.getCurrentSession();
         for(CartItem cartItem : cart.getCartItems()){
             session.delete(cartItem);
         }
         cart.setTotal(0);
 
+    }
+
+    @Override
+    public void update(Cart cart) {
+        Session session = this.sessionFactory.getCurrentSession();
+        session.update(cart);
     }
 
 }

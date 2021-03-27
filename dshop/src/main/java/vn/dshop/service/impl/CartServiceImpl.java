@@ -22,23 +22,24 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
-    public void addToCart(CartItem cartItem, Cart cart) {
-
-    }
-
-    @Override
-    public void deleteCartItem(CartItem cartItem) {
-
+    public void addToCart(CartItem cartItem) {
+        this.cartItemRepository.save(cartItem);
     }
 
     @Override
     @Transactional
-    public void save(Cart cart) {
-        this.cartRepository.save(cart);
+    public void deleteCartItem(CartItem cartItem) {
+        this.cartItemRepository.delete(cartItem);
     }
 
-    @Override
-    public void emptyCart(Cart cart) {
 
+    @Override
+    @Transactional
+    public void emptyCart(Cart cart) {
+        for(CartItem cartItem: cart.getCartItems()){
+            this.cartItemRepository.delete(cartItem);
+        }
+        cart.setTotal(0);
+        this.cartRepository.update(cart);
     }
 }

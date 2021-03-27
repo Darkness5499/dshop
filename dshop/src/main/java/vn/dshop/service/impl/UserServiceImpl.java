@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import vn.dshop.entity.Cart;
 import vn.dshop.entity.User;
 import vn.dshop.repository.UserRepository;
 import vn.dshop.service.UserService;
@@ -32,6 +33,9 @@ public class UserServiceImpl implements UserService {
         if (u.getId() > 0) {
             userRepository.update(u);
         } else {
+            Cart cart = new Cart();
+            cart.setTotal(0);
+            cart.setUser(u);
             userRepository.insert(u);
         }
     }

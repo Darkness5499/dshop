@@ -1,11 +1,8 @@
 package vn.dshop.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -34,12 +31,8 @@ public class CartController {
             return ResponseEntity.badRequest().body(new String("Please Login!"));
         }
     }
-    @GetMapping(value = "/s")
-    public Object test(@AuthenticationPrincipal Object o){
-        return o;
-    }
     @Secured("ROLE_USER")
-    @PostMapping(value = "/delete-items/{id}")
+    @DeleteMapping(value = "/delete-items/{id}")
     public void delete(@PathVariable int id){
 
     }
@@ -48,5 +41,4 @@ public class CartController {
     public ResponseEntity<MessageDTO> save(){
         return null;
     }
-
 }

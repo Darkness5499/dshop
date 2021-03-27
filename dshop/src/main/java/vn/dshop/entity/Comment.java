@@ -9,8 +9,8 @@ import java.util.Date;
 @Entity
 @Getter
 @Setter
-@Table(name = "product_comment")
-public class ProductComment {
+@Table(name = "comment")
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

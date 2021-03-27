@@ -1,8 +1,8 @@
 package vn.dshop.repository;
 
-import vn.dshop.entity.OrderDetails;
+import vn.dshop.entity.OrderItems;
 
 public interface OrderDetailsRepository {
-    void save(OrderDetails orderDetails);
+    void save(OrderItems orderItems);
 
 }

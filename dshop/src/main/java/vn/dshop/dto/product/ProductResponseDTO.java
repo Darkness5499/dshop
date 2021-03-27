@@ -8,5 +8,4 @@ import java.util.List;
 @Setter
 public class ProductResponseDTO extends ProductDTO{
     private double newPrice;
-
 }

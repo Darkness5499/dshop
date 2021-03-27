@@ -3,9 +3,8 @@ package vn.dshop.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vn.dshop.entity.Order;
-import vn.dshop.entity.OrderDetails;
+import vn.dshop.entity.OrderItems;
 import vn.dshop.entity.Status;
-import vn.dshop.entity.User;
 import vn.dshop.repository.OrderDetailsRepository;
 import vn.dshop.repository.OrderRepository;
 import vn.dshop.service.OrderService;
@@ -46,9 +45,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void save(Order order, List<OrderDetails> orderDetails) {
+    public void save(Order order, List<OrderItems> orderDetails) {
         this.orderRepository.save(order);
-        for(OrderDetails orderDetail:orderDetails){
+        for(OrderItems orderDetail:orderDetails){
             this.orderDetailsRepository.save(orderDetail);
         }
     }

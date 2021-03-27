@@ -4,7 +4,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import vn.dshop.entity.OrderDetails;
+import vn.dshop.entity.OrderItems;
 import vn.dshop.repository.OrderDetailsRepository;
 @Repository
 public class OrderDetailsRepositoryImpl implements OrderDetailsRepository {
@@ -15,8 +15,8 @@ public class OrderDetailsRepositoryImpl implements OrderDetailsRepository {
     }
 
     @Override
-    public void save(OrderDetails orderDetails) {
+    public void save(OrderItems orderItems) {
         Session session = this.sessionFactory.getCurrentSession();
-        session.save(orderDetails);
+        session.save(orderItems);
     }
 }

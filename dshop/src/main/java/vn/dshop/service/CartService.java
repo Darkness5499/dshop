@@ -3,8 +3,7 @@ import vn.dshop.entity.Cart;
 import vn.dshop.entity.CartItem;
 
 public interface CartService {
-    void addToCart(CartItem cartItem, Cart cart);
+    void addToCart(CartItem cartItem);
     void deleteCartItem(CartItem cartItem);
-    void save(Cart cart);
     void emptyCart(Cart cart);
 }

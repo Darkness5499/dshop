@@ -1,4 +1,5 @@
 package vn.dshop.controller;
+import java.net.http.HttpResponse;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Locale;
@@ -8,13 +9,12 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.web.bind.annotation.*;
 import vn.dshop.dto.user.AuthenticationRequestDTO;
 import vn.dshop.dto.user.ChangePasswordDTO;
 import vn.dshop.dto.user.CreateUserDTO;
@@ -29,10 +29,13 @@ import vn.dshop.service.CartService;
 import vn.dshop.service.UserService;
 import vn.dshop.transform.UserTransform;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/accounts")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class AccountController {
 
     private MessageSource messageSource;
@@ -68,16 +71,14 @@ public class AccountController {
     }
 
     @PostMapping
-    public ResponseEntity<UserDTO> createUser(@RequestBody CreateUserDTO body) throws ParseException {
+    public ResponseEntity<MessageDTO> createUser(@RequestBody @Valid CreateUserDTO body, Locale locale) throws ParseException {
+        MessageDTO response = new MessageDTO();
         UserTransform transform = new UserTransform(dateFormat);
         User user = transform.apply(body);
         encryptPassword(user);
         userService.save(user);
-        Cart cart = new Cart();
-        cart.setTotal(0);
-        cart.setUser(user);
-        cartService.save(cart);
-        return ResponseEntity.ok(transform.apply(user));
+        response.setText(messageSource.getMessage("success.signup",null,locale));
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/password")
@@ -95,6 +96,17 @@ public class AccountController {
             return ResponseEntity.badRequest().body(response);
         }
     }
+
+    @GetMapping("/logout")
+    public void logout(HttpServletRequest request, HttpServletResponse response){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if(auth!=null){
+            System.out.println(auth);
+            System.out.println("logout thanh cong");
+            new SecurityContextLogoutHandler().logout(request,response,auth);
+        }
+    }
+
 
     private void encryptPassword(User user) {
         String rawPassword = user.getPassword();

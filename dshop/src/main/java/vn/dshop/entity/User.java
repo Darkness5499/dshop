@@ -34,7 +34,7 @@ public class  User {
     private Cart cart;
 
     @OneToMany(mappedBy = "user")
-    private List<ProductComment> productComments;
+    private List<Comment> comments;
 
     @OneToMany(mappedBy = "user")
     private Set<Order> orders;

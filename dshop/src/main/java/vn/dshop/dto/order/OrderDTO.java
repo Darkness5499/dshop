@@ -9,5 +9,6 @@ import java.util.List;
 public class OrderDTO {
     private double totalPrice;
     private String date;
-    private List<OrderDetailsDTO> orderDetailsDTOS;
+    private List<OrderItemsDTO> orderItemsDTOS;
+    private String address;
 }
