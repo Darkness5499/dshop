@@ -1,7 +1,9 @@
 package vn.dshop.controller;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import vn.dshop.dto.product.ProductResponseDTO;
+import vn.dshop.entity.Image;
 import vn.dshop.entity.Product;
 import vn.dshop.service.CategoryService;
 import vn.dshop.service.ProductService;
@@ -18,6 +20,9 @@ public class ProductController {
     private CategoryService categoryService;
     private DateFormat dateFormat;
 
+    @Value("${file.resource}")
+    private String src;
+
     @Autowired
     public ProductController(ProductService productService, CategoryService categoryService, DateFormat dateFormat) {
         this.productService = productService;
@@ -27,11 +32,11 @@ public class ProductController {
     @GetMapping
     public List<ProductResponseDTO> listProduct(){
         ProductTransform productTransform = new ProductTransform(dateFormat);
-        List<Product> products = productService.getAllProducts();
+        List<Product> products = this.productService.getAllProducts();
         List<ProductResponseDTO> response = new ArrayList<>();
-        for(Product p:products){
-            ProductResponseDTO productResponseDTO = productTransform.apply(p);
-            response.add(productResponseDTO);
+        for(Product p : products){
+            ProductResponseDTO dto = productTransform.apply(p);
+            response.add(dto);
         }
         return response;
     }

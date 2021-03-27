@@ -38,7 +38,6 @@ public class Product {
     private Set<CartItem> cartItems;
 
     @OneToMany(mappedBy = "product")
-    @JsonIgnore
     private Set<Image> images;
 
 

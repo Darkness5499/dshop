@@ -1,6 +1,4 @@
 package vn.dshop.service.impl;
-
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -9,11 +7,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import vn.dshop.entity.Image;
 import vn.dshop.entity.Product;
-import vn.dshop.exception.ImageStorageException;
 import vn.dshop.repository.ImageRepository;
 import vn.dshop.repository.ProductRepository;
 import vn.dshop.service.ProductService;
-
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
@@ -25,7 +21,7 @@ import java.util.regex.Pattern;
 public class ProductServiceImpl implements ProductService {
     private Pattern pattern;
     private Matcher matcher;
-    private static final String IMAGE_PATTERN = "([^\\s]+(\\.(?i)(jpg|png|gif|bmp))$)";
+    private static final String IMAGE_PATTERN = "([^\\s]+(\\.(?i)(jpg|png|gif|bmp|jpeg))$)";
     @Value("${file.upload-dir}")
     private String fileDir;
 
@@ -54,8 +50,10 @@ public class ProductServiceImpl implements ProductService {
             image.setImageUrl(imageName);
             image.setContentType(file.getContentType());
             image.setProduct(p);
+            this.imageRepository.save(image);
         }
     }
+
     @Override
     @Transactional
     public void delete(int id) {
@@ -83,16 +81,19 @@ public class ProductServiceImpl implements ProductService {
     }
 
     //store image
-    public String storeImage(MultipartFile image){
+    public boolean storeImage(MultipartFile image){
         String imageName = StringUtils.cleanPath(image.getOriginalFilename());
         try{
             if(!validate(imageName)) {
-                throw new ImageStorageException("Sorry! Filename contains invalid path sequence " + imageName);
+                System.out.println("Could not save "+ imageName);
+                return false;
+            } else {
+                FileCopyUtils.copy(image.getBytes(), new File(fileDir+imageName));
+                return true;
             }
-            FileCopyUtils.copy(image.getBytes(), new File(fileDir+imageName));
-            return imageName;
         }catch (IOException e){
-            throw new ImageStorageException("Could not store image "+imageName);
+            e.printStackTrace();
+            return false;
         }
     }
     //validate image file
