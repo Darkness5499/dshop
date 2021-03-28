@@ -33,29 +33,6 @@ public class AdProductController {
         this.dateFormat = dateFormat;
         this.messageSource = messageSource;
     }
-//    @PostMapping(value = "/save")
-//    public ResponseEntity save(@ModelAttribute ProductDTO body, @RequestParam List<MultipartFile> images)
-//            throws ParseException {
-//        for(MultipartFile file:images){
-//            System.out.println(file.getOriginalFilename());
-//        }
-//
-//        try{
-//            ProductTransform productTransform = new ProductTransform(dateFormat);
-//            Category category = categoryService.getCategoryById(body.getCategoryid());
-//            if(category==null){
-//                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-//                        .body(new String("No category found"));
-//            }
-//            Product product = productTransform.apply(body);
-//            product.setCategory(category);
-//            productService.save(product, images);
-//            return ResponseEntity.ok(new String("Thêm sản phẩm thành công"));
-//        } catch (Exception e){
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-//                    .body(new String("Dữ liệu không đúng"));
-//        }
-//    }
     @PostMapping(value = "save")
     public ResponseEntity<MessageDTO> save1(@ModelAttribute @Valid ProductDTO body, @RequestParam List<MultipartFile> images, Locale locale) throws ParseException {
         MessageDTO response = new MessageDTO();

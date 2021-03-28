@@ -1,12 +1,10 @@
 package vn.dshop.transform;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import vn.dshop.dto.product.ProductDTO;
 import vn.dshop.dto.product.ProductResponseDTO;
 import vn.dshop.entity.Image;
 import vn.dshop.entity.Product;
-import vn.dshop.service.ProductService;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -42,11 +40,6 @@ public class ProductTransform {
         if(product.getCreated()!=null){
             dto.setCreated(dateFormat.format(product.getCreated()));
         }
-        List<String> imgresp = new ArrayList<>();
-        for(Image img:product.getImages()){
-            imgresp.add(img.getImageUrl());
-        }
-        dto.setImages(imgresp);
         return dto;
     }
 }

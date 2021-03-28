@@ -21,7 +21,7 @@ public class ProductController {
     private DateFormat dateFormat;
 
     @Value("${file.resource}")
-    private String src;
+    private String dir;
 
     @Autowired
     public ProductController(ProductService productService, CategoryService categoryService, DateFormat dateFormat) {
@@ -34,8 +34,13 @@ public class ProductController {
         ProductTransform productTransform = new ProductTransform(dateFormat);
         List<Product> products = this.productService.getAllProducts();
         List<ProductResponseDTO> response = new ArrayList<>();
+        List<String> imgresp = new ArrayList<>();
         for(Product p : products){
             ProductResponseDTO dto = productTransform.apply(p);
+            for(Image i : p.getImages()){
+                imgresp.add(dir + i.getImageUrl());
+            }
+            dto.setImages(imgresp);
             response.add(dto);
         }
         return response;
@@ -44,6 +49,5 @@ public class ProductController {
     public List<Product> getProductsByCategory(@PathVariable(name = "category") String category){
         return this.productService.getProductByCategoryName(category);
     }
-
 
 }
