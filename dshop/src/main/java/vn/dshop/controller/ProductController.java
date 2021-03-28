@@ -16,10 +16,9 @@ import java.util.List;
 @RequestMapping(value = "/products")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ProductController {
-    public ProductService productService;
+    private ProductService productService;
     private CategoryService categoryService;
     private DateFormat dateFormat;
-
     @Value("${file.resource}")
     private String dir;
 
@@ -29,21 +28,38 @@ public class ProductController {
         this.categoryService = categoryService;
         this.dateFormat = dateFormat;
     }
+//    @GetMapping
+//    public List<ProductResponseDTO> listProduct(){
+//        ProductTransform productTransform = new ProductTransform(dateFormat);
+//        List<Product> products = this.productService.getAllProducts();
+//        List<ProductResponseDTO> response = new ArrayList<>();
+//        List<String> imgresp = new ArrayList<>();
+//        for(Product p : products){
+//            ProductResponseDTO dto = productTransform.apply(p);
+//            for(Image i : p.getImages()){
+//                imgresp.add(dir + i.getImageUrl());
+//            }
+//            dto.setImages(imgresp);
+//            response.add(dto);
+//        }
+//        return response;
+//    }
     @GetMapping
-    public List<ProductResponseDTO> listProduct(){
-        ProductTransform productTransform = new ProductTransform(dateFormat);
+    public List<ProductResponseDTO> getAll(){
+        List<ProductResponseDTO> listDTO = new ArrayList<ProductResponseDTO>();
+        ProductTransform transform = new ProductTransform(dateFormat);
         List<Product> products = this.productService.getAllProducts();
-        List<ProductResponseDTO> response = new ArrayList<>();
-        List<String> imgresp = new ArrayList<>();
         for(Product p : products){
-            ProductResponseDTO dto = productTransform.apply(p);
-            for(Image i : p.getImages()){
-                imgresp.add(dir + i.getImageUrl());
+            ProductResponseDTO resp = transform.apply(p);
+            List<String> img = new ArrayList<String>();
+            for(Image i : this.productService.getAllImageByProduct(p.getProductId())){
+                String imgurl = dir+i.getImageUrl();
+                img.add(imgurl);
             }
-            dto.setImages(imgresp);
-            response.add(dto);
+            resp.setImages(img);
+            listDTO.add(resp);
         }
-        return response;
+        return listDTO;
     }
     @GetMapping(value = "/{category}")
     public List<Product> getProductsByCategory(@PathVariable(name = "category") String category){

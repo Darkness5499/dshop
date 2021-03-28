@@ -1,5 +1,6 @@
 package vn.dshop.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,8 +22,8 @@ public class Image {
 
     @Column(name = "content_type")
     private String contentType;
+
     @ManyToOne
     @JoinColumn(name = "product_id")
-    @JsonIgnore
     private Product product;
 }

@@ -9,4 +9,5 @@ import java.util.List;
 public class ProductResponseDTO extends ProductDTO{
     private double newPrice;
     private List<String> images;
+    private int productId;
 }

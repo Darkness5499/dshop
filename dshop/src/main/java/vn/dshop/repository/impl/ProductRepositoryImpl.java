@@ -5,11 +5,8 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
-import vn.dshop.entity.Category;
 import vn.dshop.entity.Product;
 import vn.dshop.repository.ProductRepository;
-
-import javax.transaction.Transactional;
 import java.util.List;
 @Repository
 public class ProductRepositoryImpl implements ProductRepository {
@@ -23,8 +20,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public List<Product> getAllProducts() {
         Session session = this.sessionFactory.getCurrentSession();
-        Query<Product> query = session.createQuery("select p from Product p", Product.class);
-        return query.getResultList();
+        return session.createQuery("select p from Product p ",Product.class).getResultList();
     }
 
     @Override
