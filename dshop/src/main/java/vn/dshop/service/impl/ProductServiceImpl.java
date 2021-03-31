@@ -13,6 +13,9 @@ import vn.dshop.service.ProductService;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -53,6 +56,7 @@ public class ProductServiceImpl implements ProductService {
             storeImage(file);
             Image image = new Image();
             String imageName = StringUtils.cleanPath(file.getOriginalFilename());
+            System.out.println(imageName);
             image.setImageUrl(imageName);
             image.setContentType(file.getContentType());
             image.setProduct(p);
@@ -116,6 +120,24 @@ public class ProductServiceImpl implements ProductService {
             return false;
         }
     }
+    public boolean storeImage1(MultipartFile image){
+        String imageName = StringUtils.cleanPath(image.getOriginalFilename());
+        try{
+            if(!validate(imageName)) {
+                System.out.println("Could not save "+ imageName);
+                return false;
+            } else {
+                byte[] bytes = image.getBytes();
+                Path path = Paths.get(fileDir + image.getOriginalFilename());
+                Files.write(path, bytes);
+                return true;
+            }
+        }catch (IOException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     //validate image file
     public boolean validate(final String image) {
         pattern = Pattern.compile(IMAGE_PATTERN);

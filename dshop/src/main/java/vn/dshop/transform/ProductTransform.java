@@ -20,7 +20,6 @@ public class ProductTransform {
         product.setDiscount(dto.getDiscount());
         product.setQuantity(dto.getQuantity());
         product.setCreated(dateFormat.parse(dto.getCreated()));
-
         return product;
     }
     public ProductResponseDTO apply(Product product){

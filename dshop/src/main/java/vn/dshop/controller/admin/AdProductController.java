@@ -13,11 +13,11 @@ import vn.dshop.entity.Product;
 import vn.dshop.service.CategoryService;
 import vn.dshop.service.ProductService;
 import vn.dshop.transform.ProductTransform;
+import java.util.Arrays;
 import java.util.Locale;
 import javax.validation.Valid;
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.util.List;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping(value = "admin/products")
@@ -33,17 +33,22 @@ public class AdProductController {
         this.dateFormat = dateFormat;
         this.messageSource = messageSource;
     }
-    @PostMapping(value = "save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "save")
     public ResponseEntity<MessageDTO> save1(@ModelAttribute @Valid ProductDTO body, Locale locale) throws ParseException {
         MessageDTO response = new MessageDTO();
         ProductTransform productTransform = new ProductTransform(dateFormat);
         Category category = categoryService.getCategoryById(body.getCategoryid());
+        System.out.println(body.getCreated());
         try{
             if(category!=null){
+                System.out.println("aaa");
                 Product product = productTransform.apply(body);
+                System.out.println("1");
                 product.setCategory(category);
-                productService.save(product, body.getImages());
+                System.out.println("den buoc nay");
+                productService.save(product, Arrays.asList(body.getImages()));
                 response.setText(messageSource.getMessage("success.upload",null,locale));
+                System.out.println(response);
                 return ResponseEntity.ok(response);
             } else {
                 response.setText(messageSource.getMessage("error.category",null,locale));
@@ -54,7 +59,7 @@ public class AdProductController {
             return ResponseEntity.badRequest().body(response);
         }
     }
-    @PutMapping(value = "/update/{productid}")
+    @PutMapping(value = "/update/{productid}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<MessageDTO> update(@RequestBody @Valid ProductDTO body,@PathVariable(name = "productid") int productid, Locale locale) throws ParseException {
         Product product = this.productService.getProductById(productid);
         ProductTransform transform = new ProductTransform(dateFormat);

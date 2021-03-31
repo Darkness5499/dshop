@@ -21,6 +21,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public void save(Category c) {
         this.categoryRepository.save(c);
     }

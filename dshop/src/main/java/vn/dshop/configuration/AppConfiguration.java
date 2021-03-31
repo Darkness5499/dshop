@@ -21,7 +21,7 @@ public class AppConfiguration {
     }
     @Bean
     public DateFormat dateFormat() {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         return format;
     }
 }
