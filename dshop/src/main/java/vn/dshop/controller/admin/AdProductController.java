@@ -19,7 +19,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.List;
 @RestController
-//@Secured("ROLE_ADMIN")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping(value = "admin/products")
 public class AdProductController {
     private ProductService productService;
@@ -33,8 +33,8 @@ public class AdProductController {
         this.dateFormat = dateFormat;
         this.messageSource = messageSource;
     }
-    @PostMapping(value = "save")
-    public ResponseEntity<MessageDTO> save1(@ModelAttribute @Valid ProductDTO body, @RequestParam List<MultipartFile> images, Locale locale) throws ParseException {
+    @PostMapping(value = "save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<MessageDTO> save1(@ModelAttribute @Valid ProductDTO body, Locale locale) throws ParseException {
         MessageDTO response = new MessageDTO();
         ProductTransform productTransform = new ProductTransform(dateFormat);
         Category category = categoryService.getCategoryById(body.getCategoryid());
@@ -42,7 +42,7 @@ public class AdProductController {
             if(category!=null){
                 Product product = productTransform.apply(body);
                 product.setCategory(category);
-                productService.save(product, images);
+                productService.save(product, body.getImages());
                 response.setText(messageSource.getMessage("success.upload",null,locale));
                 return ResponseEntity.ok(response);
             } else {
@@ -56,11 +56,32 @@ public class AdProductController {
     }
     @PutMapping(value = "/update/{productid}")
     public ResponseEntity<MessageDTO> update(@RequestBody @Valid ProductDTO body,@PathVariable(name = "productid") int productid, Locale locale) throws ParseException {
-        return null;
+        Product product = this.productService.getProductById(productid);
+        ProductTransform transform = new ProductTransform(dateFormat);
+        MessageDTO response = new MessageDTO();
+        if(product!=null){
+            product = transform.apply(body);
+            productService.update(product);
+            response.setText(messageSource.getMessage("success.update",null,locale));
+            return ResponseEntity.ok(response);
+        } else {
+            response.setText(messageSource.getMessage("error.update",null,locale));
+            return ResponseEntity.badRequest().body(response);
+        }
+
     }
     @DeleteMapping(value = "delete/{productid}")
-    public ResponseEntity<MessageDTO> delete(){
-        return null;
+    public ResponseEntity<MessageDTO> delete(@PathVariable(name = "productid") int productid, Locale locale){
+        Product product = this.productService.getProductById(productid);
+        MessageDTO response = new MessageDTO();
+        if(product!=null){
+            productService.delete(product.getProductId());
+            response.setText(messageSource.getMessage("success.delete",null,locale));
+            return ResponseEntity.ok(response);
+        }else {
+            response.setText(messageSource.getMessage("error.delete",null,locale));
+            return ResponseEntity.badRequest().body(response);
+        }
     }
     @DeleteMapping(value = "delete-comment/{commentid}")
     public ResponseEntity<MessageDTO> deleteComment(){

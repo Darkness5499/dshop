@@ -11,6 +11,7 @@ import vn.dshop.transform.ProductTransform;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @RestController
 @RequestMapping(value = "/products")
@@ -28,30 +29,15 @@ public class ProductController {
         this.categoryService = categoryService;
         this.dateFormat = dateFormat;
     }
-//    @GetMapping
-//    public List<ProductResponseDTO> listProduct(){
-//        ProductTransform productTransform = new ProductTransform(dateFormat);
-//        List<Product> products = this.productService.getAllProducts();
-//        List<ProductResponseDTO> response = new ArrayList<>();
-//        List<String> imgresp = new ArrayList<>();
-//        for(Product p : products){
-//            ProductResponseDTO dto = productTransform.apply(p);
-//            for(Image i : p.getImages()){
-//                imgresp.add(dir + i.getImageUrl());
-//            }
-//            dto.setImages(imgresp);
-//            response.add(dto);
-//        }
-//        return response;
-//    }
     @GetMapping
-    public List<ProductResponseDTO> getAll(){
-        List<ProductResponseDTO> listDTO = new ArrayList<ProductResponseDTO>();
+    public List<ProductResponseDTO> getAll(@RequestParam int position){
+        int pageSize = 10;
+        List<ProductResponseDTO> listDTO = new ArrayList<>();
         ProductTransform transform = new ProductTransform(dateFormat);
-        List<Product> products = this.productService.getAllProducts();
+        List<Product> products = this.productService.getAllProducts(position,pageSize);
         for(Product p : products){
             ProductResponseDTO resp = transform.apply(p);
-            List<String> img = new ArrayList<String>();
+            List<String> img = new ArrayList<>();
             for(Image i : this.productService.getAllImageByProduct(p.getProductId())){
                 String imgurl = dir+i.getImageUrl();
                 img.add(imgurl);
@@ -62,8 +48,22 @@ public class ProductController {
         return listDTO;
     }
     @GetMapping(value = "/{category}")
-    public List<Product> getProductsByCategory(@PathVariable(name = "category") String category){
-        return this.productService.getProductByCategoryName(category);
+    public List<ProductResponseDTO> getProductsByCategory(@PathVariable(name = "category") String category){
+        String categoryName = category.toUpperCase();
+        List<ProductResponseDTO> listDTO = new ArrayList<>();
+        ProductTransform transform = new ProductTransform(dateFormat);
+        List<Product> products =  this.productService.getProductByCategoryName(categoryName);
+        for(Product p : products){
+            ProductResponseDTO resp = transform.apply(p);
+            List<String> img = new ArrayList<>();
+            for(Image i : this.productService.getAllImageByProduct(p.getProductId())){
+                String imgurl = dir+i.getImageUrl();
+                img.add(imgurl);
+            }
+            resp.setImages(img);
+            listDTO.add(resp);
+        }
+        return listDTO;
     }
 
 }

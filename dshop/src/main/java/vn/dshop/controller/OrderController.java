@@ -34,8 +34,8 @@ public class OrderController {
         this.dateFormat = dateFormat;
         this.messageSource = messageSource;
     }
-//    @GetMapping
-//
+    @GetMapping
+
 //    public List<OrderResponseDTO> getALlOrders(Locale locale){
 //        MessageDTO response = new MessageDTO();
 //        SecurityContext securityContext = SecurityContextHolder.getContext();

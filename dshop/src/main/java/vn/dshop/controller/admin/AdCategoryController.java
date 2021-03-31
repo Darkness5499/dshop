@@ -2,6 +2,7 @@ package vn.dshop.controller.admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.dshop.dto.category.CategoryDTO;
@@ -12,6 +13,7 @@ import javax.validation.Valid;
 import java.util.Locale;
 
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping(value = "admin/categories")
 public class AdCategoryController {
     private CategoryService categoryService;

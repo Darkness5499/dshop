@@ -35,8 +35,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getAllProducts() {
-        return this.productRepository.getAllProducts();
+    public List<Product> getAllProducts(int position, int pageSize) {
+        return this.productRepository.getAllProducts(position,pageSize);
     }
 
     @Override
@@ -56,8 +56,22 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
+    public void update(Product p) {
+        if(p.getProductId()>0){
+            this.productRepository.update(p);
+        }
+    }
+
+    @Override
+    @Transactional
     public void delete(int id) {
-        this.productRepository.delete(id);
+        Product product = this.productRepository.getProductById(id);
+        if(product!=null){
+            for(Image i : product.getImages()){
+                this.imageRepository.delele(i);
+            }
+        }
+        this.productRepository.delete(product);
     }
 
     @Override

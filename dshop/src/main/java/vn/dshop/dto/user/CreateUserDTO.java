@@ -1,6 +1,9 @@
 package vn.dshop.dto.user;
-public class CreateUserDTO extends UserDTO {
 
+import javax.validation.constraints.Size;
+
+public class CreateUserDTO extends UserDTO {
+	@Size(min = 6, max = 32, message = "password must be between 2 and 32 characters long")
 	private String password;
 
 	public String getPassword() {

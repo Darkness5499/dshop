@@ -18,9 +18,13 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public List<Product> getAllProducts() {
+    public List<Product> getAllProducts(int position, int pageSize) {
         Session session = this.sessionFactory.getCurrentSession();
-        return session.createQuery("select p from Product p ",Product.class).getResultList();
+        Query<Product> query = session.createQuery("select p from Product p ",Product.class);
+        query.setFirstResult(position);
+        query.setMaxResults(pageSize);
+        return query.getResultList();
+
     }
 
     @Override
@@ -31,11 +35,16 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(Product p) {
         Session session = this.sessionFactory.getCurrentSession();
-        Product product = getProductById(id);
-        session.delete(product);
+        session.delete(p);
 
+    }
+
+    @Override
+    public void update(Product p) {
+        Session session = this.sessionFactory.getCurrentSession();
+        session.merge(p);
     }
 
     @Override
@@ -64,7 +73,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public List<Product> getProductByCategoryName(String categoryName) {
         Session session = this.sessionFactory.getCurrentSession();
-        Query<Product> query = session.createQuery("select p from Product p where p.category.name =:categoryName",Product.class);
+        Query<Product> query = session.createQuery("select p from Product p where p.category.name =: categoryName",Product.class);
         query.setParameter("categoryName", categoryName);
         return query.getResultList();
     }

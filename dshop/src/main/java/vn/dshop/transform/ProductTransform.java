@@ -1,14 +1,10 @@
 package vn.dshop.transform;
-
-import org.springframework.beans.factory.annotation.Value;
 import vn.dshop.dto.product.ProductDTO;
 import vn.dshop.dto.product.ProductResponseDTO;
-import vn.dshop.entity.Image;
 import vn.dshop.entity.Product;
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
+
 
 public class ProductTransform {
     private DateFormat dateFormat;

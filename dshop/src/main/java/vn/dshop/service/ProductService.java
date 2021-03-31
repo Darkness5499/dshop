@@ -7,8 +7,9 @@ import vn.dshop.entity.Product;
 import java.util.List;
 
 public interface ProductService {
-    List<Product> getAllProducts();
+    List<Product> getAllProducts(int position, int pageSize);
     void save(Product p, List<MultipartFile> files);
+    void update(Product p);
     void delete(int id);
     Product getProductById(int id);
     List<Product> getProductsByCategory(int categoryId);
