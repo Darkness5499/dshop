@@ -1,6 +1,7 @@
 package vn.dshop.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.dshop.dto.product.ProductResponseDTO;
 import vn.dshop.entity.Image;
@@ -30,22 +31,26 @@ public class ProductController {
         this.dateFormat = dateFormat;
     }
     @GetMapping
-    public List<ProductResponseDTO> getAll(@RequestParam int position){
-        int pageSize = 10;
+    public ResponseEntity<List<ProductResponseDTO>> getAll(@RequestParam int position){
         List<ProductResponseDTO> listDTO = new ArrayList<>();
         ProductTransform transform = new ProductTransform(dateFormat);
-        List<Product> products = this.productService.getAllProducts(position,pageSize);
-        for(Product p : products){
-            ProductResponseDTO resp = transform.apply(p);
-            List<String> img = new ArrayList<>();
-            for(Image i : this.productService.getAllImageByProduct(p.getProductId())){
-                String imgurl = dir+i.getImageUrl();
-                img.add(imgurl);
-            }
-            resp.setImages(img);
-            listDTO.add(resp);
-        }
-        return listDTO;
+        List<Product> products = this.productService.getAllProducts(position);
+       if(products!=null){
+           for(Product p : products){
+               ProductResponseDTO resp = transform.apply(p);
+               List<String> img = new ArrayList<>();
+               for(Image i : this.productService.getAllImageByProduct(p.getProductId())){
+                   String imgurl = dir+i.getImageUrl();
+                   img.add(imgurl);
+               }
+               resp.setImages(img);
+               listDTO.add(resp);
+           }
+           return ResponseEntity.ok().body(listDTO);
+       } else {
+           return ResponseEntity.noContent().build();
+       }
+
     }
     @GetMapping(value = "/{category}")
     public List<ProductResponseDTO> getProductsByCategory(@PathVariable(name = "category") String category){

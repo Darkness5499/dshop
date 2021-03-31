@@ -35,8 +35,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getAllProducts(int position, int pageSize) {
-        return this.productRepository.getAllProducts(position,pageSize);
+    public List<Product> getAllProducts(int position) {
+        if(position>=0){
+            position = position*20;
+            return this.productRepository.getAllProducts(position);
+        } else {
+            return null;
+        }
+
     }
 
     @Override

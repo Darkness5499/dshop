@@ -7,7 +7,7 @@ import vn.dshop.entity.User;
 import java.util.List;
 
 public interface ProductRepository {
-    List<Product> getAllProducts(int position, int pageSize);
+    List<Product> getAllProducts(int position);
     void save(Product p);
     void delete(Product p);
     void update(Product p);
