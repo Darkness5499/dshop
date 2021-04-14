@@ -31,6 +31,7 @@ public class CartController {
             return ResponseEntity.badRequest().body(new String("Please Login!"));
         }
     }
+
     @Secured("ROLE_USER")
     @DeleteMapping(value = "/delete-items/{id}")
     public void delete(@PathVariable int id){
